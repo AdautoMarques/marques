@@ -1,22 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyToken } from "@/lib/jwt";
 
 export async function PUT(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params; // ✅ o id vem corretamente agora
-
-  if (!id) {
-    return NextResponse.json({ error: "ID não informado." }, { status: 400 });
-  }
-
-  const token = req.headers
-    .get("cookie")
-    ?.split("auth_token=")[1]
-    ?.split(";")[0];
+  const { id } = await context.params;
+  const token = req.cookies.get("auth_token")?.value;
   const decoded = verifyToken(token || "");
+
   if (!decoded || typeof decoded !== "object") {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
@@ -32,18 +25,18 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  const token = req.headers
-    .get("cookie")
-    ?.split("auth_token=")[1]
-    ?.split(";")[0];
+  const { id } = await context.params;
+  const token = req.cookies.get("auth_token")?.value;
   const decoded = verifyToken(token || "");
+
   if (!decoded || typeof decoded !== "object") {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
-  await prisma.finance.delete({ where: { id: Number(params.id) } });
+  await prisma.finance.delete({ where: { id: Number(id) } });
+
   return NextResponse.json({ message: "Lançamento removido com sucesso" });
 }
