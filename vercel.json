@@ -1,10 +1,9 @@
 {
-  "builds": [{ "src": "package.json", "use": "@vercel/next" }],
   "functions": {
-    "api/**/route.js": {
+    "api/**/*.js": {
       "includeFiles": "node_modules/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node"
     },
-    "api/**/route.ts": {
+    "api/**/*.ts": {
       "includeFiles": "node_modules/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node"
     }
   }
