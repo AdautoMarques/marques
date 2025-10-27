@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "postinstall": "npx prisma generate && node -e \"import('fs').then(fs => fs.promises.cp('node_modules/.prisma', 'node_modules/@prisma/.prisma', { recursive: true }))\""
+    "postinstall": "prisma generate && mkdir -p node_modules/.prisma/client && cp -r node_modules/@prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node node_modules/.prisma/client/"
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
